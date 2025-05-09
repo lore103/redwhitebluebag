@@ -2,16 +2,15 @@ let opacitySlider;
 let scaleSlider;
 let redBlueCheckbox;
 let redBlackCheckbox;
-let overlayImage; // Variable to store the overlay image
-let showOverlayCheckbox; // Checkbox to toggle overlay visibility 
+let overlayImage; 
+let showOverlayCheckbox;
 let blockMove = false;
 let infoButton;
 let showInfoPopup = false;
 let popupContent;
 
 function preload() {
-  // Load the overlay image
-  // Replace 'overlay.png' with your actual image file name
+
   overlayImage = loadImage('bag_mockuppp.png');
 }
 
@@ -24,26 +23,20 @@ class CheckerboardBlock {
   }
   
   initialize() {
-    // Color options based on user selection
-    this.color1 = color(164, 9, 9);    // Red (always available)
+    this.color1 = color(164, 9, 9); 
     
-    // Choose color2 based on checkbox selection
     if (redBlueCheckbox.checked()) {
-      this.color2 = color(0, 100, 230); // Blue
+      this.color2 = color(0, 100, 230); 
     } else if (redBlackCheckbox.checked()) {
-      this.color2 = color(0, 0, 0);     // Black
+      this.color2 = color(0, 0, 0);  
     } else {
-      // Default fallback if somehow neither is checked
-      this.color2 = color(74, 79, 86);  // Gray
+      this.color2 = color(74, 79, 86); 
     }
     
-    // Choose between the two available colors
     this.baseColor = random([this.color1, this.color2]);
     
-    // Base box size that will be modified by the scale slider
     this.baseBoxSize = random(0.4, 15);
     
-    // Random position and dimension for the block
     let blockWidth = random(5, 100);
     let blockHeight = random(5, 100);
     
@@ -57,7 +50,6 @@ class CheckerboardBlock {
     this.startingRow = min(c, d);
     this.endingRow = max(c, d);
     
-    // Random orientation (horizontal or vertical)
     this.isHorizontal = random() > 0.5;
   }
 
@@ -77,13 +69,11 @@ class CheckerboardBlock {
   }
   
   stopDragging() {
-    // Stop dragging
     this.dragging = false;
   }
   
   drag(px, py) {
     if (this.dragging) {
-      // Update position based on mouse and offset
       let width = this.endingCol - this.startingCol;
       let height = this.endingRow - this.startingRow;
       
@@ -95,11 +85,9 @@ class CheckerboardBlock {
   }
   
   
-  // Draw this checkerboard block
   display() {
     noStroke();
     
-    // Apply the current opacity from the slider
     let currentOpacity = opacitySlider.value();
     this.fillcolor = color(
       red(this.baseColor),
@@ -108,7 +96,6 @@ class CheckerboardBlock {
       currentOpacity
     );
     
-    // Apply the current scale from the slider
     let currentScale = scaleSlider.value();
     this.boxSize = this.baseBoxSize * currentScale;
     this.gap = this.boxSize * 2;
@@ -117,28 +104,24 @@ class CheckerboardBlock {
     fill(this.fillcolor);
     
     if (this.isHorizontal) {
-      // First matrix of squares
       for (let i = 0; i <= width; i += this.gap) {
         for (let j = this.startingRow; j <= this.endingRow; j += this.gap) {
           rect(i, j, this.boxSize, this.boxSize);
         }
       }
       
-      // Second matrix (shifted)
       for (let i = 0; i <= width; i += this.gap) {
         for (let j = this.startingRow; j <= this.endingRow; j += this.gap) {
           rect(i + this.gapShift, j + this.gapShift, this.boxSize, this.boxSize);
         }
       }
     } else {
-      // First matrix of squares
       for (let i = this.startingCol; i <= this.endingCol; i += this.gap) {
         for (let j = 0; j <= height; j += this.gap) {
           rect(i, j, this.boxSize, this.boxSize);
         }
       }
       
-      // Second matrix (shifted)
       for (let i = this.startingCol; i <= this.endingCol; i += this.gap) {
         for (let j = 0; j <= height; j += this.gap) {
           rect(i + this.gapShift, j + this.gapShift, this.boxSize, this.boxSize);
@@ -148,9 +131,8 @@ class CheckerboardBlock {
   }
 }
 
-// Array to store multiple checkerboard blocks
 let blocks = [];
-const numBlocks = 6; // Number of blocks to create
+const numBlocks = 6;
 let changePatternButton;
 let addhorizontalButton;
 let addverticalButton;
@@ -158,21 +140,19 @@ let addverticalButton;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   
-  // Create color selection checkboxes
   let checkboxY = 20;
 
   let title = createP('MAKE A RED•WHITE•BLUE BAG PATTERN');
-  title.position(20, checkboxY); // Adjust Y position as needed
+  title.position(20, checkboxY); 
   title.style('font-size', '17px');
   title.style('font-weight', 'bold');
-  title.style('font-family', 'Oranienbaum-Regular'); // or any font you like
+  title.style('font-family', 'Oranienbaum-Regular');
   title.style('letter-spacing', '1px');
   title.style('margin', '0 0 10px 0');
   title.style('padding','10px');
   title.style('background-color', '#ffffff');
   title.style('border-radius', '5px');
   
-  // Create a container div for the checkboxes and labels
   let colorSelectDiv = createDiv('');
   colorSelectDiv.position(20, checkboxY+50);
   colorSelectDiv.style('background-color', '#ffffff');
@@ -185,21 +165,17 @@ function setup() {
   colorTitle.style('margin', '0 0 10px 0');
   colorTitle.style('font-weight', 'bold');
   
-  // Create Red-Blue checkbox
   redBlueCheckbox = createCheckbox('Blue', true);
   redBlueCheckbox.parent(colorSelectDiv);
   redBlueCheckbox.changed(updateColorSelection);
   
-  // Create Red-Black checkbox
   redBlackCheckbox = createCheckbox('Black', false);
   redBlackCheckbox.parent(colorSelectDiv);
   redBlackCheckbox.changed(updateColorSelection);
   
   
-  // Position buttons below the color selection
   let buttonY = 180;
   
-  // Create buttons
   addhorizontalButton = createButton('+ Horizontal Row');
   addhorizontalButton.position(20, buttonY+30);
   addhorizontalButton.mousePressed(addHorizontal);
@@ -211,21 +187,17 @@ function setup() {
   addverticalButton.style('font-family', 'Oranienbaum-Regular');
 
   
-  // Create opacity slider
   opacitySlider = createSlider(65, 200, 150, 1);
   opacitySlider.position(100, buttonY + 60);
   opacitySlider.style('width', '200px');
   
-  // Create scale slider
   scaleSlider = createSlider(0.5, 3, 1, 0.1);
   scaleSlider.position(100, buttonY + 90);
   scaleSlider.style('width', '200px');
   
-    // Create overlay checkbox
   showOverlayCheckbox = createCheckbox('Mockup my Pattern', false);
   showOverlayCheckbox.parent(colorSelectDiv);
   
-  // Create pattern change button
   changePatternButton = createButton('↻ Change Pattern');
   changePatternButton.position(20, buttonY + 120);
   changePatternButton.mousePressed(changePattern);
@@ -251,7 +223,6 @@ infoButton = createButton('What is the RED•WHITE•BLUE bag?');
   infoButton.style('padding','10px');
   infoButton.style('font-family', 'Oranienbaum-Regular');
   
-  // Create popup content
   popupContent = createDiv('');
   popupContent.html(`
     <div style="padding: 1vw;">
@@ -270,17 +241,13 @@ infoButton = createButton('What is the RED•WHITE•BLUE bag?');
   popupContent.style('box-shadow', '0 4px 8px rgba(0,0,0,0.2)');
   popupContent.style('font-family', 'Oranienbaum-Regular, serif');
   popupContent.style('z-index', '1000');
-  popupContent.style('display', 'none'); // Hide initially
+  popupContent.style('display', 'none');
 
   
-  // Create initial checker blocks
   for (let i = 0; i < numBlocks; i++) {
     blocks.push(new CheckerboardBlock());
   }
 
-  
-  
-  // Adjust layout if window is resized
   windowResized();
  
 
@@ -295,15 +262,11 @@ function draw() {
   for (let block of blocks) {
     block.display();
   }
-  
-  // Display slider labels
-
-  // Display the overlay image if checkbox is checked
+ 
   if (showOverlayCheckbox.checked()) {
-    let imgWidth = width;  // Fixed width in pixels
-    let imgHeight = height; // Fixed height in pixels
-    
-    // Center the image on the canvas
+    let imgWidth = width; 
+    let imgHeight = height; 
+
     let imgX = (width - imgWidth) / 2;
     let imgY = (height - imgHeight) / 2;
     
@@ -322,7 +285,6 @@ function draw() {
 }
 
 function downloadPattern() {
-  // Generate a filename with date and time
   let now = new Date();
   let filename = 'pattern_' + 
                 now.getFullYear() + 
@@ -333,11 +295,9 @@ function downloadPattern() {
                 nf(now.getSeconds(), 2) + 
                 '.png';
   
-  // Save the canvas
   saveCanvas(filename);
 }
 
-// Ensure only one checkbox is checked at a time
 function updateColorSelection() {
   if (this === redBlueCheckbox && redBlueCheckbox.checked()) {
     redBlackCheckbox.checked(false);
@@ -345,9 +305,7 @@ function updateColorSelection() {
     redBlueCheckbox.checked(false);
   }
   
-  // Make sure at least one is checked
   if (!redBlueCheckbox.checked() && !redBlackCheckbox.checked()) {
-    // If trying to uncheck both, recheck the one that was just clicked
     if (this === redBlueCheckbox) {
       redBlueCheckbox.checked(true);
     } else {
@@ -356,7 +314,6 @@ function updateColorSelection() {
   }
 }
 
-// Generate a random range
 function randomLengthGen(length) {
   let a = floor(random(0, length));
   let b = floor(random(0, length));
@@ -379,20 +336,15 @@ function changePattern() {
 function addHorizontal() {
   let newBlock1 = new CheckerboardBlock();
   
-  // Override its properties to make it a horizontal row
-  newBlock1.isHorizontal = true;  // Make it horizontal
-  
-  // Set it to span the full width
+  newBlock1.isHorizontal = true;  
   newBlock1.startingCol = 0;
   newBlock1.endingCol = width;
-  
-  // Give it a random height and position
+
   let rowHeight = random(30, 80);
   let rowY = random(0, height - rowHeight);
   newBlock1.startingRow = rowY;
   newBlock1.endingRow = rowY + rowHeight;
   
-  // Add it to the blocks array
   blocks.push(newBlock1);
 
   newBlock1.draggable();
@@ -403,14 +355,10 @@ function addHorizontal() {
 function addVertical() {
   let newBlock = new CheckerboardBlock();
   
-  // Override its properties to make it a vertical column
-  newBlock.isHorizontal = false;  // Make it vertical
-  
-  // Set it to span the full height
+  newBlock.isHorizontal = false; 
   newBlock.startingRow = 0;
   newBlock.endingRow = height;
   
-  // Give it a random width and position
   let columnWidth = random(30, 80);
   let columnX = random(0, width - columnWidth);
   newBlock.startingCol = columnX;
@@ -424,27 +372,23 @@ function addVertical() {
 
 }
 function mousePressed() {
-  // Check if any block is being clicked
   for (let i = blocks.length - 1; i >= 0; i--) {
     if (blocks[i].contains(mouseX, mouseY)) {
       blocks[i].startDragging(mouseX, mouseY);
-      // Move this block to the end of the array so it appears on top
       let selectedBlock = blocks.splice(i, 1)[0];
       blocks.push(selectedBlock);
-      return; // Only drag the topmost block
+      return; 
     }
   }
 }
 
 function mouseReleased() {
-  // Stop dragging all blocks
   for (let block of blocks) {
     block.stopDragging();
   }
 }
 
 function mouseDragged() {
-  // Update positions of any blocks being dragged
   for (let block of blocks) {
     block.drag(mouseX, mouseY);
   }
@@ -459,29 +403,23 @@ function toggleInfoPopup() {
   }
 }
 
-// Add a mousePressed handler to close the popup when clicking outside
 function mousePressed() {
-  // Check if click is outside the popup when popup is showing
   if (showInfoPopup) {
-    // Get popup position and dimensions
     let popupX = popupContent.position().x;
     let popupY = popupContent.position().y;
     let popupW = popupContent.size().width;
     let popupH = popupContent.size().height;
     
-    // If clicked outside popup area, close it
     if (mouseX < popupX || mouseX > popupX + popupW || 
         mouseY < popupY || mouseY > popupY + popupH) {
-      if (!inInfoButton()) { // Don't close if clicking the info button
+      if (!inInfoButton()) {
         showInfoPopup = false;
         popupContent.style('display', 'none');
       }
     }
-    // Return if we processed a popup click to avoid handling block dragging in the same click
     return;
   }
   
-  // Your existing mousePressed code for dragging blocks
   for (let i = blocks.length - 1; i >= 0; i--) {
     if (blocks[i].contains(mouseX, mouseY)) {
       blocks[i].startDragging(mouseX, mouseY);
@@ -492,7 +430,6 @@ function mousePressed() {
   }
 }
 
-// Helper function to check if mouse is over the info button
 function inInfoButton() {
   let btnX = infoButton.position().x;
   let btnY = infoButton.position().y;
@@ -503,13 +440,10 @@ function inInfoButton() {
           mouseY >= btnY && mouseY <= btnY + btnH);
 }
 
-// Add this function to handle window resizing
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 
-  // Adjust info button to stay in top-right corner
   infoButton.position(windowWidth - 320, 20);
 
-  // Center the popup
   popupContent.position(windowWidth/2 - popupContent.width/2, windowHeight/2 - 200);
 }
